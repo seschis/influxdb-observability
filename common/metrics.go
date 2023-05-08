@@ -34,6 +34,7 @@ const (
 	MetricsSchemaTelegrafPrometheusV1
 	MetricsSchemaTelegrafPrometheusV2
 	MetricsSchemaOtelV1
+	MetricsSchemaOtelV1Exemplar
 )
 
 func (ms MetricsSchema) String() string {
@@ -44,6 +45,8 @@ func (ms MetricsSchema) String() string {
 		return "telegraf-prometheus-v2"
 	case MetricsSchemaOtelV1:
 		return "otel-v1"
+	case MetricsSchemaOtelV1Exemplar:
+		return "otel-v1-exemplar"
 	default:
 		panic("invalid MetricsSchema")
 	}
@@ -53,4 +56,5 @@ var MetricsSchemata = map[string]MetricsSchema{
 	MetricsSchemaTelegrafPrometheusV1.String(): MetricsSchemaTelegrafPrometheusV1,
 	MetricsSchemaTelegrafPrometheusV2.String(): MetricsSchemaTelegrafPrometheusV2,
 	MetricsSchemaOtelV1.String():               MetricsSchemaOtelV1,
+	MetricsSchemaOtelV1Exemplar.String():       MetricsSchemaOtelV1Exemplar,
 }
