@@ -83,6 +83,10 @@ func (m *metricWriterOtelV1) enqueueSum(ctx context.Context, measurementName str
 		}
 	}
 
+	buildExemplarValue := func(exemplar pmetric.Exemplar) string {
+		return fmt.Sprintf("%s:%s,", exemplar.TraceID().String(), exemplar.SpanID().String())
+	}
+
 	for i := 0; i < pm.Sum().DataPoints().Len(); i++ {
 		// TODO datapoint exemplars
 		// TODO datapoint flags
@@ -103,6 +107,13 @@ func (m *metricWriterOtelV1) enqueueSum(ctx context.Context, measurementName str
 			tags[k] = v.AsString()
 			return true
 		})
+
+		var exemplarFieldValue strings.Builder
+		for i := 0; i < dataPoint.Exemplars().Len(); i++ {
+			e := dataPoint.Exemplars().At(i)
+			exemplarFieldValue.WriteString(buildExemplarValue(e))
+		}
+		fields["exemplars"] = exemplarFieldValue.String()
 
 		err := batch.EnqueuePoint(ctx, measurementName, tags, fields, dataPoint.Timestamp().AsTime(), common.InfluxMetricValueTypeUntyped)
 		if err != nil {
